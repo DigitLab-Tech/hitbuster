@@ -1,16 +1,34 @@
-import dbConnection from "@/db/DBConnection";
-import { TableInterface } from "@/db/table/TableInterface";
-import userTable from "@/db/table/userTable";
+"use client";
 
-export default async function Home() {
-  const connection = await dbConnection.connect();
-  const tables: TableInterface[] = [userTable];
+import { NextResponse } from "next/server";
+import { useFormState } from "react-dom";
+import { initTables, seedTables } from "../actions";
 
-  if (connection) {
-    for (const table of tables) {
-      await connection?.execute(table.getCreateQuery());
-    }
-  }
+export default function Home() {
+  const [initTablesState, initTablesFormAction] = useFormState(initTables, {
+    msg: "",
+  });
+  const [seedTablesState, seedTablesFormAction] = useFormState(seedTables, {
+    msg: "",
+  });
 
-  return <div></div>;
+  console.log(initTablesState);
+  console.log(seedTablesState);
+
+  return (
+    <div className="flex gap-3">
+      <form
+        className="w-full h-screen flex justify-center items-center"
+        action={initTablesFormAction}
+      >
+        <button>Init Tables</button>
+      </form>
+      <form
+        className="w-full h-screen flex justify-center items-center"
+        action={seedTablesFormAction}
+      >
+        <button>Seed Tables</button>
+      </form>
+    </div>
+  );
 }
