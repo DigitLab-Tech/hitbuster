@@ -30,7 +30,20 @@ const moviesCategoriesTable: TableInterface = {
   },
 
   getSeedQuery() {
-    return null;
+    return `INSERT INTO ${this.getTableName()} (movie_id, category_id) VALUES
+      (1, 1),
+      (2, 1),
+      (3, 1),
+      (4, 1),
+      (5, 1),
+      (5, 3),
+      (7, 4),
+      (3, 5),
+      (8, 1),
+      (9, 3),
+      (5, 5),
+      (2, 6),
+      (1, 2);`;
   },
 } as const;
 

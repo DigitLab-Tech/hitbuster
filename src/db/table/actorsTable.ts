@@ -1,6 +1,12 @@
 import { TableInterface } from "../TableInterface";
+import castingsTable from "./castingsTable";
+import moviesTable from "./moviesTable";
 
-const actorsTable: TableInterface = {
+export interface ActorsTablesInterface {
+  getBestMovieActorsQuery: () => string;
+}
+
+const actorsTable: TableInterface & ActorsTablesInterface = {
   getTableName: function (): string {
     return "Actors";
   },
@@ -28,6 +34,17 @@ const actorsTable: TableInterface = {
     ('David', 'Jones'),
     ('Eve', 'Miller'),
     ('Frank', 'Davis');`;
+  },
+
+  getBestMovieActorsQuery() {
+    const tableName = this.getTableName();
+    const moviesTableName = moviesTable.getTableName();
+    const castingsTableName = castingsTable.getTableName();
+
+    return `SELECT firstname, lastname, ${moviesTableName}.name as movie_name, ${moviesTableName}.rating as movie_rating FROM ${tableName}
+      INNER JOIN ${castingsTableName} ON ${tableName}.id = ${castingsTableName}.actor_id
+      INNER JOIN ${moviesTableName} ON ${castingsTableName}.movie_id = ${moviesTableName}.id
+      WHERE ${castingsTableName}.movie_id = (SELECT id FROM ${moviesTableName} ORDER BY rating DESC LIMIT 1)`;
   },
 } as const;
 

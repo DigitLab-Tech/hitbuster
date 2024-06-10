@@ -2,7 +2,20 @@ import { TableInterface } from "../TableInterface";
 import moviesTable from "./moviesTable";
 import usersTable from "./usersTable";
 
-const commentsTable: TableInterface = {
+export interface CommentsTableInterface {
+  updateCommentRatingQuery: (
+    userEmail: string,
+    movieName: string,
+    rating: number | string
+  ) => { text: string; values: string[] };
+  deleteCommentQuery: (
+    userEmail: string,
+    movieName: string
+  ) => { text: string; values: string[] };
+  getAllQuery: () => string;
+}
+
+const commentsTable: TableInterface & CommentsTableInterface = {
   getTableName: function (): string {
     return "Comments";
   },
@@ -43,6 +56,56 @@ const commentsTable: TableInterface = {
     (5, 7, 'Loved the characters and the plot twists.', 5),
     (6, 2, 'It was okay, had some good moments but also some flaws.', 3),
     (3, 2, 'Brilliant direction and excellent cinematography.', 5);`;
+  },
+
+  updateCommentRatingQuery: function (
+    userEmail: string,
+    movieName: string,
+    rating: number | string
+  ): { text: string; values: string[] } {
+    const tableName = this.getTableName();
+    const usersTableName = usersTable.getTableName();
+    const moviesTableName = moviesTable.getTableName();
+
+    return {
+      text: `
+      UPDATE ${tableName}
+      SET rating = $3
+      FROM ${usersTableName}, ${moviesTableName}
+      WHERE ${tableName}.movie_id = ${moviesTableName}.id 
+      AND ${tableName}.user_id = ${usersTableName}.id 
+      AND ${usersTableName}.email = $1 
+      AND ${moviesTableName}.name = $2;`,
+      values: [userEmail, movieName, rating.toString()],
+    };
+  },
+
+  deleteCommentQuery: function (userEmail: string, movieName: string) {
+    const tableName = this.getTableName();
+    const usersTableName = usersTable.getTableName();
+    const moviesTableName = moviesTable.getTableName();
+
+    return {
+      text: `
+      DELETE FROM ${tableName}
+      USING ${usersTableName}, ${moviesTableName}
+      WHERE ${tableName}.movie_id = ${moviesTableName}.id 
+      AND ${tableName}.user_id = ${usersTableName}.id 
+      AND ${usersTableName}.email = $1 
+      AND ${moviesTableName}.name = $2;`,
+      values: [userEmail, movieName],
+    };
+  },
+
+  getAllQuery: function (): string {
+    const tableName = this.getTableName();
+    const usersTableName = usersTable.getTableName();
+    const moviesTableName = moviesTable.getTableName();
+
+    return `SELECT ${usersTableName}.email as user_email, ${moviesTableName}.name as movie_name, ${tableName}.rating FROM ${tableName}
+    INNER JOIN ${moviesTableName} ON ${tableName}.movie_id = ${moviesTableName}.id
+    INNER JOIN ${usersTableName} ON ${tableName}.user_id = ${usersTableName}.id
+    ORDER BY ${usersTableName}.id`;
   },
 } as const;
 

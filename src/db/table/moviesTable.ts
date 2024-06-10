@@ -1,7 +1,15 @@
 import { TableInterface } from "../TableInterface";
+import categoriesTable from "./categoriesTable";
+import moviesCategoriesTable from "./moviesCategoriesTable";
 import producersTable from "./producersTable";
+import viewingsTable from "./viewingsTable";
 
-const moviesTable: TableInterface = {
+export interface MoviesTableInterface {
+  getNeverViewedMoviesQuery: () => string;
+  getActionMoviesQuery: () => string;
+}
+
+const moviesTable: TableInterface & MoviesTableInterface = {
   getTableName: function (): string {
     return "Movies";
   },
@@ -41,6 +49,22 @@ const moviesTable: TableInterface = {
     (4, 'The Godfather', 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 175, 'English', 'English', 9.2),
     (2, 'Forrest Gump', 'The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other historical events unfold from the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.', 142, 'English', 'English', 8.8),
     (4, 'The Lord of the Rings: The Return of the King', 'Gandalf and Aragorn lead the World of Men against Sauron''s army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.', 201, 'English', 'English', 8.9);`;
+  },
+
+  getNeverViewedMoviesQuery: function (): string {
+    return `SELECT name FROM ${this.getTableName()}
+      WHERE id NOT IN  (SELECT movie_id FROM ${viewingsTable.getTableName()})`;
+  },
+
+  getActionMoviesQuery: function (): string {
+    const tableName = this.getTableName();
+    const moviesCategoriesTableName = moviesCategoriesTable.getTableName();
+    const categoriesTableName = categoriesTable.getTableName();
+
+    return `SELECT ${tableName}.name, rating FROM ${tableName}
+      INNER JOIN ${moviesCategoriesTableName} ON ${tableName}.id = ${moviesCategoriesTableName}.movie_id
+      INNER JOIN ${categoriesTableName} ON ${moviesCategoriesTableName}.category_id = ${categoriesTableName}.id
+      WHERE ${categoriesTableName}.name = 'Action';`;
   },
 } as const;
 

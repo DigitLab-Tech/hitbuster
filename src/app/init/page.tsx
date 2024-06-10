@@ -12,9 +12,6 @@ export default function Home() {
     msg: "",
   });
 
-  console.log(initTablesState);
-  console.log(seedTablesState);
-
   return (
     <div className="flex gap-3">
       <form
