@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -10,6 +8,11 @@ import {
 import commentsTable from "@/db/table/commentsTable";
 import { db } from "@vercel/postgres";
 import CommentForm from "./CommentForm";
+import { Metadata } from "next/types";
+
+export const metadata: Metadata = {
+  title: "Update Comments",
+};
 
 export type CommentRow = {
   user_email: string;
@@ -27,7 +30,7 @@ export default async function UpdateComment() {
   const rows = allCommentsResult.rows;
 
   return (
-    <div className="flex flex-col gap-3 justify-center items-center w-full h-screen p-6">
+    <div className="py-6 w-full">
       <h1 className="font-bold text-2xl">Action movies</h1>
       <Table>
         <TableHeader>

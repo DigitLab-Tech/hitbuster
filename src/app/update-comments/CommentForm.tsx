@@ -32,11 +32,7 @@ export default function CommentForm({ row }: { row: CommentRow }) {
       <TableCell className="font-medium">{row.user_email}</TableCell>
       <TableCell className="font-medium">{row.movie_name}</TableCell>
       <TableCell className="font-medium">
-        <Input
-          className="text-black"
-          defaultValue={row.rating}
-          onInput={handleInput}
-        />
+        <Input defaultValue={row.rating} onInput={handleInput} />
       </TableCell>
       <TableCell className="flex gap-3 font-medium">
         <form action={updateCommentRatingFormAction}>

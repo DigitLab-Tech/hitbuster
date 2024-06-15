@@ -11,7 +11,7 @@ import {
 import moviesTable from "@/db/table/moviesTable";
 
 export const metadata: Metadata = {
-  title: "Best Movie Actors",
+  title: "Never Viewed Movies",
 };
 
 export async function getNeverViewedMovies() {
@@ -26,7 +26,7 @@ export default async function bestMovieActors() {
   const rows = getNeverViewedMoviesResult.rows;
 
   return (
-    <div className="flex flex-col gap-3 justify-center items-center w-full h-screen">
+    <div className="py-6 w-full">
       <h1 className="font-bold text-2xl">Never viewed movies</h1>
       <Table>
         <TableHeader>

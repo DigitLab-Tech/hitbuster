@@ -26,6 +26,7 @@ const moviesCategoriesTable: TableInterface = {
       ADD CONSTRAINT movie_category_category_id_foreign 
       FOREIGN KEY(category_id) 
       REFERENCES ${categoriesTable.getTableName()} (id);`,
+      `ALTER TABLE ${this.getTableName()} ADD PRIMARY KEY (movie_id, category_id);`,
     ];
   },
 

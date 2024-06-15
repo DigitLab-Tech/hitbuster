@@ -28,7 +28,7 @@ export default async function actionMovies() {
   const rows = actionMoviesResult.rows;
 
   return (
-    <div className="flex flex-col gap-3 justify-center items-center w-full h-screen">
+    <div className="py-6 w-full">
       <h1 className="font-bold text-2xl">Action movies</h1>
       <Table>
         <TableHeader>

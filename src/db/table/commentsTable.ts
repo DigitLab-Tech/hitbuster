@@ -32,15 +32,18 @@ const commentsTable: TableInterface & CommentsTableInterface = {
   },
 
   getRelationQueries: function (): string[] {
+    const tableName = this.getTableName();
+
     return [
-      `ALTER TABLE ${this.getTableName()} 
+      `ALTER TABLE ${tableName} 
       ADD CONSTRAINT comment_movie_id_foreign 
       FOREIGN KEY(movie_id) 
       REFERENCES ${moviesTable.getTableName()} (id);`,
-      `ALTER TABLE ${this.getTableName()} 
+      `ALTER TABLE ${tableName} 
       ADD CONSTRAINT comment_user_id_foreign 
       FOREIGN KEY(user_id) 
       REFERENCES ${usersTable.getTableName()} (id);`,
+      `ALTER TABLE ${tableName} ADD PRIMARY KEY (user_id, movie_id);`,
     ];
   },
 

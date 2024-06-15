@@ -1,30 +1,33 @@
 "use client";
 
-import { NextResponse } from "next/server";
 import { useFormState } from "react-dom";
-import { initTables, seedTables } from "../actions";
+import { initSQLFunction, initTables, seedTables } from "../actions";
+import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default function Init() {
   const [initTablesState, initTablesFormAction] = useFormState(initTables, {
     msg: "",
   });
   const [seedTablesState, seedTablesFormAction] = useFormState(seedTables, {
     msg: "",
   });
+  const [initSQLFunctionState, initSQLFunctionFormAction] = useFormState(
+    initSQLFunction,
+    {
+      msg: "",
+    }
+  );
 
   return (
-    <div className="flex gap-3">
-      <form
-        className="w-full h-screen flex justify-center items-center"
-        action={initTablesFormAction}
-      >
-        <button>Init Tables</button>
+    <div className="flex gap-3 items-center justify-center w-full h-screen">
+      <form action={initTablesFormAction}>
+        <Button>Init Tables</Button>
       </form>
-      <form
-        className="w-full h-screen flex justify-center items-center"
-        action={seedTablesFormAction}
-      >
-        <button>Seed Tables</button>
+      <form action={seedTablesFormAction}>
+        <Button>Seed Tables</Button>
+      </form>
+      <form action={initSQLFunctionFormAction}>
+        <Button>Init SQL functions/procedures</Button>
       </form>
     </div>
   );

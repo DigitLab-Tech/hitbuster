@@ -24,12 +24,12 @@ export async function getBestMovieActors() {
   }>(actorsTable.getBestMovieActorsQuery());
 }
 
-export default async function bestMovieActors() {
+export default async function BestMovieActors() {
   const bestMovieActorsResult = await getBestMovieActors();
   const rows = bestMovieActorsResult.rows;
 
   return (
-    <div className="flex flex-col gap-3 justify-center items-center w-full h-screen">
+    <div className="py-6 w-full">
       <h1 className="font-bold text-2xl">Best Movie Actors</h1>
       <Table>
         <TableHeader>

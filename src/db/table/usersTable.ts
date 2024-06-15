@@ -3,6 +3,7 @@ import viewingsTable from "./viewingsTable";
 
 export interface UsersTableInterface {
   getBestViewerQuery: () => string;
+  getAllQuery: () => string;
 }
 
 const usersTable: TableInterface & UsersTableInterface = {
@@ -53,6 +54,11 @@ const usersTable: TableInterface & UsersTableInterface = {
     GROUP BY ${tableName}.id
     ORDER BY view_count DESC
     LIMIT 1;`;
+  },
+
+  getAllQuery: function (): string {
+    return `SELECT id, firstname, lastname FROM users
+    ORDER BY lastname`;
   },
 } as const;
 

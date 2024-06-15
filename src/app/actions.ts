@@ -4,12 +4,12 @@ import { createClient, db } from "@vercel/postgres";
 import tablesPool from "@/db/tablesPool";
 import commentsTable from "@/db/table/commentsTable";
 import { revalidatePath } from "next/cache";
+import getBestSuggestionFunction from "@/db/SQLFunction/getBestSuggestionFunction";
+import updateCommentRatingProcedure from "@/db/SQLProcedure/updateCommentRatingProcedure";
 
 export async function initTables() {
   const client = createClient();
   const tables = tablesPool.getTables();
-
-  console.log(tables[0].getRelationQueries.length);
 
   await client.connect();
 
@@ -65,13 +65,15 @@ export async function seedTables() {
 }
 
 export async function updateCommentRating(prevState: any, formData: FormData) {
+  "use server";
+
   const client = await db.connect();
   const email = formData.get("user_email");
   const movieName = formData.get("movie_name");
   const rating = formData.get("rating");
 
   if (email && movieName && rating) {
-    const { text, values } = commentsTable.updateCommentRatingQuery(
+    const { text, values } = updateCommentRatingProcedure.getQuery(
       email.toString(),
       movieName.toString(),
       rating.toString()
@@ -88,7 +90,23 @@ export async function updateCommentRating(prevState: any, formData: FormData) {
   return { msg: "something went wrong" };
 }
 
+export async function initSQLFunction(prevState: any, formData: FormData) {
+  "use server";
+
+  const client = await db.connect();
+  try {
+    await client.query(getBestSuggestionFunction.getCreationQuery());
+    await client.query(updateCommentRatingProcedure.getCreationQuery());
+    return { msg: "Success" };
+  } catch (error) {
+    console.log(error);
+    return { msg: "something went wrong" };
+  }
+}
+
 export async function deleteComment(prevState: any, formData: FormData) {
+  "use server";
+
   const client = await db.connect();
   const email = formData.get("user_email");
   const movieName = formData.get("movie_name");
@@ -109,4 +127,19 @@ export async function deleteComment(prevState: any, formData: FormData) {
     }
   }
   return { msg: "something went wrong" };
+}
+
+export async function getBestSuggestion(prevState: any, formData: FormData) {
+  const client = await db.connect();
+  const userId = formData.get("userId");
+
+  if (userId) {
+    const result = await client.query<{
+      get_best_suggestion: string;
+    }>(getBestSuggestionFunction.getQuery(userId.toString()));
+
+    return { suggestion: result?.rows[0]?.get_best_suggestion ?? "" };
+  }
+
+  return { suggestion: "" };
 }
