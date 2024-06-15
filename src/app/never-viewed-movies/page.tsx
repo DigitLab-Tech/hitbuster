@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "Never Viewed Movies",
 };
 
-export async function getNeverViewedMovies() {
+async function getNeverViewedMovies() {
   const client = await db.connect();
   return await client.query<{
     name: string;

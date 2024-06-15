@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Best Suggestion",
 };
 
-export async function getAllUsers() {
+async function getAllUsers() {
   const client = await db.connect();
 
   return await client.query<{
