@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "Best Movie Actors",
 };
 
-export async function getBestMovieActors() {
+async function getBestMovieActors() {
   const client = await db.connect();
   return await client.query<{
     firstname: string;
